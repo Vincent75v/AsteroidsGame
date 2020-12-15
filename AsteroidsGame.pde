@@ -1,79 +1,99 @@
-//your variable declarations here
 Spaceship bob = new Spaceship();
-Star [] sky = new Star[1500];
-ArrayList <Asteroid> obj = new ArrayList <Asteroid>(); 
-
+ArrayList <Bullet> pew = new ArrayList <Bullet>(); 
+Star[] stars;
+ArrayList <Asteroid> rock; 
 public void setup() 
-
+{
+  //your code here
+  //background(0); 
+  size(700, 700);
+  rock = new ArrayList <Asteroid>();
+  for (int i = 0; i < 20; i++)
   {
-    size(400, 400);
-    background(0);
-    bob.accelerate(0.2);
-    for (int i = 0; i < sky.length; i++)
+    rock.add(new Asteroid((int)(Math.random()*700), (int)(Math.random()*700)));
+  }
+  stars = new Star[1500];
+  for (int i = 0; i < stars.length; i++)
   {
-    sky[i] = new Star();
+    stroke(255);
+    stars[i] = new Star((int)(Math.random()*700), (int)(Math.random()*700));
   }
-   for (int z = 0; z < 15; z++) {
-     obj.add(new Asteroid()); 
-  }
-   
 }
-  
-  public void draw() 
+public void draw() 
+{
+  background(0);
+  fill(255);
+  bob.move();
+  bob.show(); 
+  for (int i = 0; i < rock.size(); i++)
   {
-    background(0);
-    for(int z = 0; z < obj.size(); z++) {
-    
-    if(dist(obj.get(z).getX(), obj.get(z).getY(), bob.getX(), bob.getY()) < 20) {
-      obj.remove(z);
+    rock.get(i).show();
+    rock.get(i).move();
+    if (rock.get(i).crash())
+    {
+      rock.remove(i);
     }
-      else{
-    obj.get(z).move(); 
-    obj.get(z).show();
+  }
+  if (rock.size() == 0)
+  {
+    for (int i = 0; i < 15; i++) {
+      rock.add(new Asteroid((int)(Math.random()*700), (int)(Math.random()*700)));
+      if (rock.get(i).crash())
+      {
+        rock.remove(i);
       }
     }
-     bob.move();
-    bob.show();
-    
-  
-
-   
-    
-    
-    
-
-    
-     for (int i = 0; i < sky.length; i++)
+  }
+  for (int i = 0; i < stars.length; i ++) {
+    stars[i].show();
+  }
+  for (int i= 0; i < pew.size(); i++){
+    pew.get(i).show();
+    pew.get(i).move();
+    for(int j = 0; j < rock.size(); j++) {
+     if(dist(pew.get(i).getX(), pew.get(i).getY(), rock.get(j).getX(), rock.get(j).getY()) < 20) {
+     rock.remove(j);
+     pew.remove(i);
+     break;
+     }
+  }
+}
+}
+public void keyPressed()
+{
+  if (key == 'd')
   {
-    sky[i].show();
+    bob.turn(10);
+    if (key == 'w') {
+      bob.accelerate(.5);
+    }
   }
-
-    
-  }
-
-
-  public void keyPressed()
+  if (key == 'a')
   {
-    if (key=='w')
-    {
-      bob.accelerate(.6);
-    }
-
-    if (key == 's')
-    {
-      bob.accelerate(-0.6);
-    }
-
-    if (key =='a')
-    {
-      bob.turn(-8);
-    }
-    if (key =='d')
-    {
-      bob.turn(8);
-    }
-    if (key=='h')
-    {
-      bob.hyperSpace();
+    bob.turn(-10);
+    if (key == 'w') {
+      bob.accelerate(.5);
     }
   }
+  if (key == 'w')
+  {
+    bob.accelerate(.1);
+    if (key == 'd') {
+      bob.turn(10);
+    }
+    if (key == 'a') {
+      bob.turn(-10);
+    }
+    if (key == ' ') {
+      pew.add(new Bullet());
+    }
+  }
+  if (key == 'e')
+  {
+    bob.hyperSpace();
+  }
+  if (key == 'q')
+  {
+    pew.add(new Bullet());
+  }
+}
